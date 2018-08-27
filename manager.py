@@ -1,5 +1,11 @@
+# -*- coding:utf-8 -*-
+# user    :chauncylee     
+# time    :18-8-26 下午6:01
+# filename:manager.py
+# IDE     :PyCharm
+
 from flask_script import Manager
-from app import app
+from arthus import app
 
 manager = Manager(app)
 
