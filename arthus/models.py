@@ -48,7 +48,7 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True)
     password = db.Column(db.String(32))
     head_url = db.Column(db.String(256))
-    images = db.relationship('Image')
+    images = db.relationship('Image', backref='user', lazy='dynamic')
 
     def __init__(self, username, password):
         self.username = username
