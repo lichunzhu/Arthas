@@ -24,7 +24,7 @@ def init_database():
     db.create_all()
     # create
     for i in range(0, 100):
-        db.session.add(User('User' + str(i + 1), 'a' + str(i)))
+        db.session.add(User('User' + str(i + 1), 'a' + str(i), '.'.join(random.sample('01234567890abcdefgABCDEFG', 10))))
         for j in range(0, 3):
             db.session.add(Image(get_image_url(), i + 1))
             for k in range(0, 3):
