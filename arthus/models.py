@@ -61,15 +61,15 @@ class User(db.Model):
         return '<User %d %s>' % (self.id, self.username)
 
     @property
-    def is_authenticated(self):  # login?
+    def is_authenticated(self):  # 是否登入
         return True
 
     @property
-    def is_active(self):  #
+    def is_active(self):         # 是否激活
         return True
 
     @property
-    def is_anonymous(self):
+    def is_anonymous(self):      # 是否匿名
         return False
 
     def get_id(self):

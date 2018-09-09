@@ -10,6 +10,7 @@ from models import User, Image
 from flask_login import login_user, logout_user, current_user, login_required
 import random
 import hashlib
+import json
 
 
 @app.route('/')
@@ -32,7 +33,21 @@ def profile(user_id):
     user = User.query.get(user_id)
     if user is None:
         return redirect('/')
-    return render_template('profile.html', user=user)
+    paginate = Image.query.filter_by(user_id=user_id).paginate(page=1, per_page=3, error_out=False)
+    return render_template('profile.html', user=user, images=paginate.items, has_next=paginate.has_next)
+
+
+# 不够restful, 后续要改成get形式
+@app.route('/profile/images/<int:user_id>/<int:page>/<int:per_page>/')
+def user_images(user_id, page, per_page):
+    paginate = Image.query.filter_by(user_id=user_id).paginate(page=page, per_page=per_page, error_out=False)
+    map = {'has_next': paginate.has_next}
+    images = []
+    for image in paginate.items:
+        imgvo = {'id': image.id, 'url': image.url, 'comment_count': len(image.comments)}
+        images.append(imgvo)
+    map['images'] = images
+    return json.dumps(map)
 
 
 @app.route("/regloginpage/")
@@ -72,7 +87,7 @@ def login():
     if next_page is not None and next_page.startswith('/'):  # 检查next_page字段是否合法
         return redirect(next_page)
 
-    return redirect('/')
+    return redirect('/')                   # 其余情况跳转到首页
 
 
 @app.route("/reg/", methods={'post', 'get'})
@@ -91,7 +106,7 @@ def reg():
 
     # 更多的条件判断
 
-    salt = '.'.join(random.sample('01234567890abcdefgABCDEFG', 10))
+    salt = '.'.join(random.sample('01234567890abcdefgABCDEFG', 10))  # 密码加盐, 增加破解难度
     m = hashlib.md5()
     m.update(password + salt)
     password = m.hexdigest()
