@@ -4,7 +4,7 @@
 # filename:runserver.py
 # IDE     :PyCharm
 
-from arthus import app
+from arthas import app
 
 if __name__ == '__main__':
     app.run(debug=True)

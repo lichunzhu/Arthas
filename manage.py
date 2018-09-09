@@ -7,8 +7,8 @@
 import random
 
 from flask_script import Manager
-from arthus import app, db
-from arthus.models import User, Image, Comment
+from arthas import app, db
+from arthas.models import User, Image, Comment
 from sqlalchemy import or_, and_
 
 manager = Manager(app)

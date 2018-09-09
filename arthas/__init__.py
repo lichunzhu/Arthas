@@ -16,4 +16,4 @@ db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = '/regloginpage/'
 
-from arthus import views, models
+from arthas import views, models

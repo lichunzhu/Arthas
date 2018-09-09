@@ -6,7 +6,7 @@
 
 import random
 
-from arthus import db, login_manager
+from arthas import db, login_manager
 from datetime import datetime
 
 

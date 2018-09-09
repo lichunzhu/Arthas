@@ -4,7 +4,7 @@
 # filename:views.py
 # IDE     :PyCharm
 
-from arthus import app, db
+from arthas import app, db
 from flask import render_template, redirect, request, flash, get_flashed_messages
 from models import User, Image
 from flask_login import login_user, logout_user, current_user, login_required
