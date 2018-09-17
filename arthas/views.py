@@ -3,14 +3,16 @@
 # time    :18-8-26 下午5:59
 # filename:views.py
 # IDE     :PyCharm
-
-from arthas import app, db
-from flask import render_template, redirect, request, flash, get_flashed_messages
-from models import User, Image
-from flask_login import login_user, logout_user, current_user, login_required
+import uuid
+import os
 import random
 import hashlib
 import json
+
+from arthas import app, db
+from flask import render_template, redirect, request, flash, get_flashed_messages, send_from_directory
+from models import User, Image
+from flask_login import login_user, logout_user, current_user, login_required
 
 
 @app.route('/')
@@ -68,7 +70,6 @@ def redirect_with_msg(target, msg, category):
 def login():
     username = request.values.get('username').strip()
     password = request.values.get('password').strip()
-    print username, password
     if username == '' or password == '':
         return redirect_with_msg('/regloginpage/', u'用户名和密码不能为空', 'reglogin')
     user = User.query.filter_by(username=username).first()
@@ -83,7 +84,6 @@ def login():
     login_user(user)
 
     next_page = request.values.get('next')  # 在存在next_page的时候直接引向next page
-    print(next_page)
     if next_page is not None and next_page.startswith('/'):  # 检查next_page字段是否合法
         return redirect(next_page)
 
@@ -117,7 +117,6 @@ def reg():
     login_user(user)
 
     next_page = request.values.get('next')
-    print(next_page)
     if next_page is not None and next_page.startswith('/'):
         return redirect(next_page)
 
@@ -128,3 +127,29 @@ def reg():
 def logout():
     logout_user()
     return redirect('/')
+
+
+def save_to_local(file, file_name):
+    save_dir = app.config['UPLOAD_DIR']
+    file.save(os.path.join(save_dir, file_name))
+    return '/image/' + file_name
+
+
+@app.route('/image/<image_name>')
+def view_image(image_name):
+    return send_from_directory(app.config['UPLOAD_DIR'], image_name)
+
+
+@app.route('/upload/', methods={"post"})
+def upload():
+    file = request.files['file']
+    file_ext = ''
+    if file.filename.find('.') > 0:
+        file_ext = file.filename.rsplit('.')[1].strip().lower()
+    if file_ext in app.config['ALLOWED_EXT']:
+        file_name = str(uuid.uuid1()).replace('-', '') + '.' + file_ext
+        url = save_to_local(file, file_name)
+        if url is not None:
+            db.session.add(Image(url, current_user.id))
+            db.session.commit()
+    return redirect('/profile/%d' % current_user.id)
