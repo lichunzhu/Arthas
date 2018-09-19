@@ -41,7 +41,7 @@ $(function () {
                         '<a class="_4zhc5 _iqaka" title="', that.encode(oResult.username), '" href="/profile/', oResult.user_id, '">', that.encode(oResult.username), '</a> ',
                         '<span><span>', that.encode(sCmt), '</span></span>',
                     '</li>'].join('');
-                oListDv.prepend(sHtml);
+                oListDv.append(sHtml);
             }).fail(function (oResult) {
                 alert(oResult.msg || '提交失败，请重试');
             }).always(function () {
